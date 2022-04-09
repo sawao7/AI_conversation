@@ -1,5 +1,6 @@
 from flask import render_template, request
 from flaskr import app
+from flaskr.sqlite import *
 
 import openai
 import os
@@ -10,7 +11,8 @@ openai.api_key = os.environ["API_KEY"]
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    datas = get_data()
+    return render_template("index.html", datas = datas)
 
 
 @app.route("/", methods=["POST"])

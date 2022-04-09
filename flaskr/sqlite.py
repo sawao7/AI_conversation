@@ -1,5 +1,5 @@
 import sqlite3
-from flask import render_template, request
+from flask import redirect, render_template, request
 from flaskr import app
 from flaskr.openai import *
 
@@ -13,14 +13,22 @@ def create_message():
         "INSERT INTO Conversation values(?, ?, ?)", (num, request.form.get('text'), request.form.get('name')))
     conn.commit()
     add_AI_response()
-    datas = get_data()
-    return render_template("index.html", datas = datas)
+    return redirect("/")
 
 
 @app.route("/get")
 def show_data():
     datas = get_data()
     return render_template("index.html", datas=datas)
+
+
+@app.route("/delete", methods=["POST"])
+def delete_data():
+    conn = sqlite3.connect('TestDB.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM Conversation")
+    conn.commit()
+    return redirect("/")
 
 def get_data():
     conn = sqlite3.connect("TestDB.db")
@@ -31,6 +39,7 @@ def get_data():
         datas.append(row)
     cur.close()
     return datas
+
 
 def get_len():
     conn = sqlite3.connect("TestDB.db")
@@ -53,10 +62,8 @@ def add_AI_response():
         conversation = f"{user}: {text}"
         conversation_list.append(conversation)
     param = '\n'.join(conversation_list) + '\nAI:'
-    # print(conversation_list)
-    # param = "You: What have you been up to?\nYou2: Watching old movies.\nYou3: Did you watch anything interesting?\nFriend:"
     res_message = create_openai_response(param)
-    # print(res_message)
+    res_message = res_message.replace('\n', '')
     # res_message = "test"
     num = get_len()
     c.execute(

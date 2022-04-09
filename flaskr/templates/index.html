@@ -8,17 +8,16 @@
 		<link rel="stylesheet" href="static/css/style.css" />
 	</head>
 	<body>
-		<form action="/" method="POST" enctype="multipart/form-data">
-			<input type="text" name="name" />
-			<input type="submit" value="送信" />
-		</form>
 		<form action="/submit" method="POST" enctype="multipart/form-data">
-			<input type="text" name="name" />
-			<input type="text" name="text" />
+			<input type="text" name="name" placeholder="User"/>
+			<input type="text" name="text" placeholder="Text(in English)" />
 			<input type="submit" value="送信" />
 		</form>
 		<form action="/get" method="GET">
-			<input type="submit" value="データ表示" />
+			<input type="submit" value="show logs" />
+		</form>
+		<form action="/delete" method="POST">
+			<input type="submit" value="reset conversation" />
 		</form>
 		{% for data in datas %}
 			<p>{{ data }}</p>
